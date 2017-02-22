@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="description" content=""/>
+<meta name="author" content=""/>
+
+
+<title>数据监控配置</title>
+
+<!--Echarts  -->
+<!-- <link href="css/ECharts/echartsHome.css" rel="stylesheet"/> -->
+
+<!-- Main CSS -->
+<link id="bs-css" href="css/mainStyle/bootstrap-cerulean.min.css" rel="stylesheet"/>
+<link href="css/mainStyle/charisma-app.css" type="text/css" rel="stylesheet"/>
+
+<!-- zTree  -->
+<link rel="stylesheet" href="css/zTree/zTreeStyle/zTreeStyle.css"/>
+<link rel="stylesheet" href="css/zTree/zTreeDomDrag.css"/>
+
+<link rel="stylesheet" href="css/jquery/jquery-ui.min.css"/>
+
+ <!-- myCSS -->
+<link href="css/main.css" rel="stylesheet"/>
+<link href="css/chart.css" rel="stylesheet"/>
+<link href="css/tree.css" rel="stylesheet"/>
+<link href="css/paramlist.css" rel="stylesheet"/>
+
+</head>
+
+<body>
+
+	<div class="navbar navabar-color" role="navigation">
+		<div class="navbar-inner">
+			<!-- <img src="img/BUAAlogo.jpg" style="height:45px; float:left"> -->
+			<a class="navbar-brand navbar-brand-color" href="#"><i
+				class="fa fa-comments"></i> <strong>数据监控配置 </strong> </a>
+		</div>
+	</div>
+
+	<div id="page_wrapper" class="ch-container">
+		<div class="row">
+			<!-- left menu starts -->
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+				<div id="sidebar" class="sidebar-nav">
+					<div class="nav-canvas">
+						<div class="nav-sm nav nav-stacked"></div>
+						<ul class="nav nav-pills nav-stacked main-menu">
+							<li class="nav-header">图表</li>
+							<!-- <li><a class="ajax-link" href="#"><i
+									class="glyphicon glyphicon-home"></i><span>表格</span></a></li> -->
+							<li class="active" id="lineChart"><a class="ajax-link" href="#" onclick="shouLine()"><span>线图</span></a></li>
+							<li id="barChart"><a class="ajax-link" href="#" onclick="shouBar()"><span>柱图</span></a></li>
+							<!-- <li><a class="ajax-link" href="#" onclick="shouSca()"><span>散点</span></a></li> -->
+							<li id="pieChart"><a class="ajax-link" href="#" onclick="shouPie()"><span>饼图</span></a></li>
+							<!-- <li><a class="ajax-link" href="#"><i
+									class="glyphicon glyphicon-eye-open"></i><span>饼图</span></a></li>
+							<li><a class="ajax-link" href="#"><i
+									class="glyphicon glyphicon-list-alt"></i><span>面积图</span></a></li>
+							<li><a class="ajax-link" href="#"><i
+									class="glyphicon glyphicon-font"></i><span>条柱图</span></a></li>
+							<li><a class="ajax-link" href="#"><i
+									class="glyphicon glyphicon-picture"></i><span>散点图</span></a></li> -->
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- left menu ends -->
+			<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+				<div id="chart_panel" class="chart_panel">
+					<div class="row">
+						<div class="AxisSelectPanel">
+							<div class="Axis">
+								<label>数据项：</label>
+							</div>
+							<div class="domBtnDiv" id="domX">
+								<div id="dom_1" class="categoryDiv"></div>
+							</div>
+							<!-- <div class="Axis">
+								<label>Y轴：</label>
+							</div>
+							<div class="domBtnDiv" id="domY">
+								<div id="dom_2" class="categoryDiv"></div>
+							</div> -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="time_select">
+							<p id="timeRange">
+								范围：<input type="text" class="range" id="range" />
+							</p>
+							<p id="timeMetric">
+								刻度：<select id="metric" class="metric">
+									<option value="1">小时</option>
+									<option value="2">天</option>
+									<option value="3">周</option>
+									<option value="4">月</option>
+									<option value="5">年</option>
+								</select>
+							</p>
+							<!-- <div class="refresh" id="refreshMethod">
+								<label> <input type="checkbox" value="" /> 所有参数同时刷新
+								</label>
+							</div> -->
+							<button class="save-btn btn btn-primary btn-sm" id="refresh" onclick="saveToPanelModal()">保存到仪表盘</button>
+							<button class="refresh-btn btn btn-primary btn-sm" id="refresh" onclick="refresh()">刷新</button>
+						</div>
+					</div>
+					
+					<!-- 添加到仪表盘Modal -->
+					<div class="modal fade" id="addToPanelModal" tabindex="-1"
+						role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">×</button>
+									<h3>保存到仪表盘</h3>
+								</div>
+								<div class="modal-body">
+									<div class="form-group has-success col-md-6">
+										<label class="control-label" id="addPanelList">选择仪表盘：</label>
+										<select id="panelList" class="form-control metric">
+											<option th:each="panel : ${panels}" th:value="${panel.id}"
+												th:text="${panel.name}"></option>
+										</select>
+									</div>
+									<div class="form-group has-success col-md-6">
+										<label class="control-label">图表名称：</label> 
+										<input type="text"
+											class="form-control" id="chartName" name="chartName" />
+									</div>
+								</div>
+								<div class="modal-footer">
+									<a href="#" class="btn btn-default" data-dismiss="modal">取消</a>
+									<a href="#" class="btn btn-primary" onclick="saveToPanel()">确定</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="chart" id="chart"></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+				<div class="param_list-nav ztree" id="param_list">
+					<div class="search">
+						<input placeholder="搜索" class="search-query form-control empty search_input" name="query" id="key"  type="text"/>
+					</div>
+					<div class="selector_container">
+						<select id="data_selector" class="selector">
+<!-- 							<option value="1">CZ7方案设计</option>
+ -->							<option th:each="mainModel:${allMainModels}" th:value="${mainModel.mmId}" th:text="${mainModel.mmName}"></option>
+						</select>
+					</div>
+					<div class="ztree" id="param_list_tree">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- jQuery -->
+	<script src="js/jquery/jquery.js"></script>
+	<script src="js/jquery/jquery.slides.js"></script>
+	<script src="js/jquery/jquery.scrollTo.js"></script>
+	<script src="js/jquery/jquery.table2excel.js"></script>
+	<script src="js/jquery/jquery.dataTables.min.js"></script>
+	<script src="js/jquery/jquery-ui.min.js"></script>
+	
+	<!-- table JS -->
+	<script src="js/responsive-tables.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap/bootstrap.min.js"></script>
+
+	<!-- zTree JS -->
+	<script src="js/zTree/jquery.ztree.core.min.js"></script>
+	<script src="js/zTree/jquery.ztree.excheck.min.js"></script>
+	<script src="js/zTree/jquery.ztree.exhide.min.js"></script>
+	<script src="js/zTree/jquery.ztree.exedit.js"></script>
+
+	<!-- chart JS -->
+	<script src="js/echarts/echarts.js"></script>
+	<script src="js/charts.js"></script>
+	
+	<!-- main JS -->
+	<script src="js/getzTree.js"></script>
+	<!-- <script src="js/treeDrag.js"></script> -->
+	<script src="js/fixcss.js"></script>
+	<script src="js/index.js"></script>
+	
+</body>
+
+</html>
