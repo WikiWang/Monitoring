@@ -37,19 +37,19 @@ var lineChart = {
 };
 
 var pieChart = {
-	    title : {
-//	        text: '饼图',
+		title : {
 	        x:'center'
 	    },
 	    tooltip : {
 	        trigger: 'item',
+	        formatter: "{a} <br/>{b} : {c} ({d}%)"
 	    },
 	    legend: {
 	        orient : 'vertical',
 	        x : 'left',
 	    },
 	    toolbox: {
-	        show : false,
+	        show : true,
 	        feature : {
 	            mark : {show: true},
 	            dataView : {show: true, readOnly: false},
@@ -69,15 +69,16 @@ var pieChart = {
 	            saveAsImage : {show: true}
 	        }
 	    },
-	    series : [
-	              {
-	                  type:'pie',
-	                  radius : '55%',
-	                  center: ['50%', '60%'],
-	                  data:[]
-	              }
-	          ],
 	    calculable : true,
+	    series : [
+	        {
+	            type:'pie',
+	            radius : '55%',
+	            center: ['50%', '60%'],
+	            data:[
+	            ]
+	        }
+	    ]
 	};
 
 var barChart = {
@@ -115,7 +116,7 @@ var barChart = {
 	    ]
 	};
 
-var chartType = 'line';
+var chartType = 'bar';
 var RealTimeType = "timeRange";
 var $active = $("#lineChart");
 var interval = null;
@@ -301,7 +302,7 @@ function setSeriexData_RealTime(){
 	});
 	var item={
 			name:"柱形图",
-			type: 'bar',
+			type: chartType,
 			data:dataValue,
 	};
 	myChart.setOption(barChart,true);
