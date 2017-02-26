@@ -14,10 +14,3 @@ function getUrlParam(name) {
 //    	$li.addClass('active');
 //    }
 //});
-
-$(function () {
-	$(".main-menu li").click(function () {
-		$("li[class='active']").removeAttr("class");
-		$(this).addClass("active");
-	});
-});

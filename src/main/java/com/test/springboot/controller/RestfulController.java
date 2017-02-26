@@ -39,8 +39,8 @@ public class RestfulController {
 	@Autowired
 	private PanelRepository panelRepository;
 	
-	@Value("${linechart_url_pre}")
-	private String linechart_url_pre;
+	@Value("${chart_url_pre}")
+	private String chart_url_pre;
 	
 	@RequestMapping(value="/Monitoring/TreeNodeParam")
 	public String treeNodeParam(@RequestParam(value="type") String type, 
@@ -64,15 +64,35 @@ public class RestfulController {
 		return queryDataService.queryData(id);
 	}
 	
-	@RequestMapping(value="/Monitoring/saveChart", method = RequestMethod.GET)
-	public String saveChart(@RequestParam(value="ids") String ids,
+	@RequestMapping(value="/Monitoring/saveLineChart", method = RequestMethod.GET)
+	public String saveLineChart(@RequestParam(value="ids") String ids,
 			@RequestParam(value="name") String name, 
 			@RequestParam(value="timeType") String timeType, 
 			@RequestParam(value="timeRange") String timeRange,
 			@RequestParam(value="panelId") String panelId){
 
 		String id = GenerateSequenceUtil.generateSequenceNo();
-		String url = linechart_url_pre + "?name=" + name + "&ids=" + ids + "&timeType=" + timeType + "&timeRange=" + timeRange;
+		String url = chart_url_pre + "linechart?name=" + name + "&ids=" + ids + "&timeType=" + timeType + "&timeRange=" + timeRange;
+		
+		Chart lineChart = new Chart(id, name, url);
+		PanelChart panelLineChart = new PanelChart(id, panelId, url, 0, 0, 0, 0);
+		Panel panel = panelRepository.findById(panelId);
+		panel.getCharts().add(id);
+		
+		chartRepository.save(lineChart);
+		panelChartRepository.save(panelLineChart);
+		panelRepository.save(panel);
+ 		return "{\"status\" : \"success!\"}";
+	}
+	
+	@RequestMapping(value="/Monitoring/saveChart", method = RequestMethod.GET)
+	public String saveChart(@RequestParam(value="ids") String ids,
+			@RequestParam(value="chartType") String chartType,
+			@RequestParam(value="name") String name, 
+			@RequestParam(value="panelId") String panelId){
+
+		String id = GenerateSequenceUtil.generateSequenceNo();
+		String url = chart_url_pre + chartType + "chart?name=" + name + "&ids=" + ids;
 		
 		Chart lineChart = new Chart(id, name, url);
 		PanelChart panelLineChart = new PanelChart(id, panelId, url, 0, 0, 0, 0);

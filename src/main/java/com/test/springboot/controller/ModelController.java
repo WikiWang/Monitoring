@@ -47,8 +47,17 @@ public class ModelController {
 	}
 	
 	@RequestMapping(value="/linechart", method = RequestMethod.GET)
-	public String chart(Model model){
+	public String lineChart(Model model){
 		return "linechart";
 	}
 	
+	@RequestMapping(value="/barchart", method = RequestMethod.GET)
+	public String barChart(Model model){
+		return "barchart";
+	}
+	
+	@RequestMapping(value="/piechart", method = RequestMethod.GET)
+	public String pieChart(Model model){
+		return "piechart";
+	}
 }

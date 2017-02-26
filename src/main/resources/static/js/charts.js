@@ -37,16 +37,9 @@ var lineChart = {
 };
 
 var pieChart = {
-		title : {
-	        x:'center'
-	    },
 	    tooltip : {
 	        trigger: 'item',
 	        formatter: "{a} <br/>{b} : {c} ({d}%)"
-	    },
-	    legend: {
-	        orient : 'vertical',
-	        x : 'left',
 	    },
 	    toolbox: {
 	        show : true,
@@ -116,7 +109,7 @@ var barChart = {
 	    ]
 	};
 
-var chartType = 'bar';
+var chartType = 'line';
 var RealTimeType = "timeRange";
 var $active = $("#lineChart");
 var interval = null;
@@ -129,33 +122,37 @@ function shouLine() {
 	$("#timeRange").show();
 	$("#timeMetric").show();
 	RealTimeType = "timeRange";
-	chartType='line';
+	if(chartType != 'line'){
+		chartType='line';
+		clearInterval(interval);
+		myChart.clear();
+	}
 }
 
 function shouBar() {
 	$("#timeRange").hide();
 	$("#timeMetric").hide();
 	RealTimeType = "realTime";
-	chartType='bar';
+	if(chartType != 'bar'){
+		chartType='bar';
+		clearInterval(interval);
+		myChart.clear();
+	}
 }
 
 function shouPie() {
 	$("#timeRange").hide();
 	$("#timeMetric").hide();
 	RealTimeType = "realTime";
-	chartType='pie';
+	if(chartType != 'pie'){
+		chartType='pie';
+		clearInterval(interval);
+		myChart.clear();
+	}
+
 }
 
 function refresh() {
-//	var params = $("dom_1").children("span");
-//	var ids=[];
-//	if(params.length == 0){
-//	alert("请从主模型树拖入数据项！")
-//	}
-//	for(var i=0; i<params.length; i++){
-//	var id = $("dom_1").eq(i).attr("id");
-//	ids.push(id);
-//	}
 
 	len = $("#dom_1 span").size();//获取span标签的个数
 	timeType = $("#metric").val();
@@ -290,33 +287,47 @@ function setSeriexData_RealTime(){
 				success:function(data){
 					dataValue.push({
 						name:data.name,
-						value:[
-						       data.name,
-						       data.value
-						       ]
+						value:data.value
 					});
 					paramArray.push(data.name);
 				}
 			});
 		}
 	});
-	var item={
-			name:"柱形图",
-			type: chartType,
-			data:dataValue,
-	};
-	myChart.setOption(barChart,true);
-	myChart.hideLoading();
-	seriesData.push(item);
-	myChart.setOption({
-		xAxis : [
-		         {
-		        	 type : 'category',
-		        	 data : paramArray
-		         }
-		         ],
-		series:seriesData
-	}); 
+	
+	if(chartType == 'bar'){
+		var item={
+				name:"柱形图",
+				type: chartType,
+				data:dataValue,
+		};
+		myChart.setOption(barChart,true);
+		myChart.hideLoading();
+		seriesData.push(item);
+		myChart.setOption({
+			xAxis : [
+			         {
+			        	 type : 'category',
+			        	 data : paramArray
+			         }
+			         ],
+			series:seriesData
+		}); 
+	} else if(chartType == 'pie'){
+		var item={
+				name:"饼图",
+				type: chartType,
+	            radius : '55%',
+	            center: ['50%', '60%'],
+				data:dataValue
+		};
+		myChart.setOption(pieChart,true);
+		myChart.hideLoading();
+		seriesData.push(item);
+		myChart.setOption({
+			series:seriesData
+		}); 
+	}
 //	myChart.hideLoading();
 //	myChart.setOption({
 //		legend: {
@@ -348,12 +359,27 @@ function saveToPanel() {
 	var name = $("#chartName").val();
 	if(name == ""){
 		alert("请输入名称！");
+	}else if(chartType == "line"){
+		$.ajax({
+			type: 'GET',
+			url: "/Monitoring/saveLineChart",
+			async: false,
+			data: {ids:idsString, name:name, timeType:timeType, timeRange:timeRange, panelId:panelId},
+			dataType: 'json',
+			success:function(data){
+				$('#addToPanelModal').modal('hide');
+			},
+			error:function(XMLHttpRequest, textStatus, errorThrown){
+				$('#addToPanelModal').modal('hide');
+				alert("保存失败！");
+			}
+		});
 	}else {
 		$.ajax({
 			type: 'GET',
 			url: "/Monitoring/saveChart",
 			async: false,
-			data: {ids:idsString, name:name, timeType:timeType, timeRange:timeRange, panelId:panelId},
+			data: {ids:idsString, name:name, chartType:chartType, panelId:panelId},
 			dataType: 'json',
 			success:function(data){
 				$('#addToPanelModal').modal('hide');
@@ -366,5 +392,8 @@ function saveToPanel() {
 	}
 }
 
-
-
+$(".main-menu li").click(function () {
+	$("li[class='active']").removeAttr("class");
+	$(this).addClass("active");
+	
+});
