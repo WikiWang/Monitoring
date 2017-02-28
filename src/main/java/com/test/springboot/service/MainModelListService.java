@@ -34,7 +34,6 @@ public class MainModelListService {
 		Gson gson = new Gson();
 		RestTemplate restTemplate = new RestTemplate();
 		String allMainModels = restTemplate.getForObject(queryAllMainModel_url, String.class);
-//		List<MainModel> list = (List) JSONArray.toCollection(allMainModels, MainModel.class);
 		
 		List<MainModel> list = gson.fromJson(allMainModels,  
                 new TypeToken<List<MainModel>>() {  

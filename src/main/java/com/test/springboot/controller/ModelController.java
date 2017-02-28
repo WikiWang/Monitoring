@@ -60,4 +60,9 @@ public class ModelController {
 	public String pieChart(Model model){
 		return "piechart";
 	}
+	
+	@RequestMapping(value="/gaugechart", method = RequestMethod.GET)
+	public String guageChart(Model model){
+		return "gaugechart";
+	}
 }

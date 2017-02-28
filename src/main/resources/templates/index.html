@@ -54,10 +54,11 @@
 							<li class="nav-header">图表</li>
 							<!-- <li><a class="ajax-link" href="#"><i
 									class="glyphicon glyphicon-home"></i><span>表格</span></a></li> -->
-							<li class="active" id="lineChart"><a class="ajax-link" href="#" onclick="shouLine()"><span>线图</span></a></li>
-							<li id="barChart"><a class="ajax-link" href="#" onclick="shouBar()"><span>柱图</span></a></li>
-							<!-- <li><a class="ajax-link" href="#" onclick="shouSca()"><span>散点</span></a></li> -->
-							<li id="pieChart"><a class="ajax-link" href="#" onclick="shouPie()"><span>饼图</span></a></li>
+							<li class="active" id="lineChart"><a class="ajax-link" href="#" onclick="showLine()"><span>线图</span></a></li>
+							<li id="barChart"><a class="ajax-link" href="#" onclick="showBar()"><span>柱图</span></a></li>
+							<!-- <li><a class="ajax-link" href="#" onclick="showSca()"><span>散点</span></a></li> -->
+							<li id="pieChart"><a class="ajax-link" href="#" onclick="showPie()"><span>饼图</span></a></li>
+							<li id="guageChart"><a class="ajax-link" href="#" onclick="showGauge()"><span>仪表盘</span></a></li>
 							<!-- <li><a class="ajax-link" href="#"><i
 									class="glyphicon glyphicon-eye-open"></i><span>饼图</span></a></li>
 							<li><a class="ajax-link" href="#"><i
@@ -102,6 +103,12 @@
 									<option value="4">月</option>
 									<option value="5">年</option>
 								</select>
+							</p>
+							<p id="minp" style="display:none;">
+								最小值：<input type="text" class="range" id="min"/>
+							</p>
+							<p id="maxp" style="display:none;">
+								最大值：<input type="text" class="range" id="max"/>
 							</p>
 							<!-- <div class="refresh" id="refreshMethod">
 								<label> <input type="checkbox" value="" /> 所有参数同时刷新

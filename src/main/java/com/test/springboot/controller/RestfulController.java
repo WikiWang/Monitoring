@@ -105,4 +105,24 @@ public class RestfulController {
  		return "{\"status\" : \"success!\"}";
 	}
 	
+	@RequestMapping(value="/Monitoring/saveGaugeChart", method = RequestMethod.GET)
+	public String saveGaugeChart(@RequestParam(value="ids") String ids,
+			@RequestParam(value="name") String name, 
+			@RequestParam(value="min") String min, 
+			@RequestParam(value="max") String max,
+			@RequestParam(value="panelId") String panelId){
+
+		String id = GenerateSequenceUtil.generateSequenceNo();
+		String url = chart_url_pre + "gaugechart?name=" + name + "&ids=" + ids + "&min=" + min + "&max=" + max;
+		
+		Chart lineChart = new Chart(id, name, url);
+		PanelChart panelLineChart = new PanelChart(id, panelId, url, 0, 0, 0, 0);
+		Panel panel = panelRepository.findById(panelId);
+		panel.getCharts().add(id);
+		
+		chartRepository.save(lineChart);
+		panelChartRepository.save(panelLineChart);
+		panelRepository.save(panel);
+ 		return "{\"status\" : \"success!\"}";
+	}
 }
